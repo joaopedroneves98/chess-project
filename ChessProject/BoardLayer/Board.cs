@@ -78,5 +78,21 @@ namespace board.Board {
                 throw new BoardException("Invalid Position!");
             }
         }
+
+        /// <summary>
+        /// Removes a piece from the board
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
+        public Piece RemovePiece(Position pos) {
+            if (GetPiece(pos) == null) {
+                return null;
+            }
+
+            Piece aux = GetPiece(pos);
+            aux.Position = null;
+            Pieces[pos.Line, pos.Column] = null;
+            return aux;
+        }
     }
 }
