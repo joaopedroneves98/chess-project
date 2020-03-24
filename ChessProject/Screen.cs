@@ -1,4 +1,5 @@
 ﻿using board.Board;
+using ChessProject.ChessLayer;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -40,6 +41,17 @@ namespace ChessProject {
                 Console.Write(piece);
                 Console.ForegroundColor = aux;
             }
+        }
+
+        /// <summary>
+        /// Reads a position from the command line
+        /// </summary>
+        /// <returns></returns>
+        public static ChessPosition ReadChessPosition() {
+            string s = Console.ReadLine();
+            char column = s[0];
+            int line = int.Parse(s[1] + "");
+            return new ChessPosition(column, line);
         }
     }
 }

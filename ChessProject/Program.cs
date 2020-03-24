@@ -1,20 +1,27 @@
 ﻿using board.Board;
 using ChessProject.board;
 using ChessProject.chess;
+using ChessProject.ChessLayer;
+using System;
 
 namespace ChessProject {
     class Program {
         static void Main(string[] args) {
             try {
-                Board b = new Board(8, 8);
+                ChessGame game = new ChessGame();
 
-                b.PlacePiece(new Rook(b, Color.Black), new Position(0, 0));
-                b.PlacePiece(new Rook(b, Color.Black), new Position(1, 3));
-                b.PlacePiece(new King(b, Color.Black), new Position(0, 2));
+                while (!game.Finished) {
+                    Console.Clear();
+                    Screen.PrintBoard(game.Board);
 
-                b.PlacePiece(new King(b, Color.White), new Position(3, 5));
+                    Console.Write("Origin: ");
+                    Position origin = Screen.ReadChessPosition().ToPosition();
+                    Console.Write("Destination: ");
+                    Position destination = Screen.ReadChessPosition().ToPosition();
 
-                Screen.PrintBoard(b);
+                    game.ExecuteMovement(origin, destination);
+                }
+
             }
             catch (BoardException e) {
                 System.Console.WriteLine(e.Message);

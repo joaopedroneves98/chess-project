@@ -16,5 +16,12 @@ namespace board.Board {
             Board = board;
             NumberOfMovements = 0;
         }
+
+        /// <summary>
+        /// Increments the number of movements
+        /// </summary>
+        public void IncrementMovements() {
+            NumberOfMovements++;
+        }
     }
 }
