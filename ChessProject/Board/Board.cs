@@ -18,5 +18,10 @@ namespace board.Board {
         public Piece GetPiece(int line, int column) {
             return Pieces[line, column];
         }
+
+        public void PlacePiece(Piece p, Position pos) {
+            Pieces[pos.Line, pos.Column] = p;
+            p.Position = pos;
+        }
     }
 }
