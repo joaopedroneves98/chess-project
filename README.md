@@ -1,2 +1,3 @@
 # chess-project
-Projeto de xadrez do curso C# Completo
+Project based on [this](https://www.udemy.com/course/programacao-orientada-a-objetos-csharp) C# course.
+
