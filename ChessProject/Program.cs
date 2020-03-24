@@ -12,6 +12,8 @@ namespace ChessProject {
                 b.PlacePiece(new Rook(b, Color.Black), new Position(1, 3));
                 b.PlacePiece(new King(b, Color.Black), new Position(0, 2));
 
+                b.PlacePiece(new King(b, Color.White), new Position(3, 5));
+
                 Screen.PrintBoard(b);
             }
             catch (BoardException e) {
