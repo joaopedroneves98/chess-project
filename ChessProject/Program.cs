@@ -11,23 +11,35 @@ namespace ChessProject {
                 ChessGame game = new ChessGame();
 
                 while (!game.Finished) {
-                    Console.Clear();
-                    Screen.PrintBoard(game.Board);
+                    try {
+                        Console.Clear();
+                        Screen.PrintBoard(game.Board);
 
-                    Console.WriteLine();
-                    Console.Write("Origin: ");
-                    Position origin = Screen.ReadChessPosition().ToPosition();
+                        Console.WriteLine();
+                        Console.WriteLine("Turn: " + game.Turn);
+                        Console.WriteLine("Waiting for player: " + game.CurrentPlayer);
 
-                    bool[,] possibleMoves = game.Board.GetPiece(origin).PossibleMovements(); // Gets the possible movements for the selected piece
+                        Console.WriteLine();
+                        Console.Write("Origin: ");
+                        Position origin = Screen.ReadChessPosition().ToPosition();
+                        game.ValidateOriginPosition(origin);
 
-                    Console.Clear();
-                    Screen.PrintBoard(game.Board, possibleMoves); // Prints the board with the possible moves
+                        bool[,] possibleMoves = game.Board.GetPiece(origin).PossibleMovements(); // Gets the possible movements for the selected piece
 
-                    Console.WriteLine();
-                    Console.Write("Destination: ");
-                    Position destination = Screen.ReadChessPosition().ToPosition();
+                        Console.Clear();
+                        Screen.PrintBoard(game.Board, possibleMoves); // Prints the board with the possible moves
 
-                    game.ExecuteMovement(origin, destination);
+                        Console.WriteLine();
+                        Console.Write("Destination: ");
+                        Position destination = Screen.ReadChessPosition().ToPosition();
+                        game.ValidateDestination(origin, destination);
+
+                        game.MakeMove(origin, destination);
+                    }
+                    catch (BoardException e) {
+                        Console.WriteLine(e.Message);
+                        Console.ReadLine();
+                    }
                 }
 
             }

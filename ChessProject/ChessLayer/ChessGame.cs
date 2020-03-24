@@ -1,4 +1,5 @@
 ﻿using board.Board;
+using ChessProject.board;
 using ChessProject.chess;
 using System;
 using System.Collections.Generic;
@@ -8,14 +9,14 @@ namespace ChessProject.ChessLayer {
     class ChessGame {
 
         public Board Board { get; private set; }
-        private int turn;
-        private Color currentPlayer;
+        public int Turn { get; private set; }
+        public Color CurrentPlayer { get; private set; }
         public bool Finished { get; set; }
 
         public ChessGame() {
             Board = new Board(8, 8);
-            turn = 1;
-            currentPlayer = Color.White;
+            Turn = 1;
+            CurrentPlayer = Color.White;
             Finished = false;
             placePieces();
         }
@@ -30,6 +31,46 @@ namespace ChessProject.ChessLayer {
             p.IncrementMovements();
             Piece captured = Board.RemovePiece(destination);
             Board.PlacePiece(p, destination);
+        }
+
+        public void ValidateDestination(Position origin, Position destination) {
+            if (Board.GetPiece(origin).CanMoveTo(destination)) {
+                throw new BoardException("Invalid destination!");
+            }
+        }
+
+        /// <summary>
+        /// Validation for the original position selected
+        /// </summary>
+        /// <param name="pos"></param>
+        public void ValidateOriginPosition(Position pos) {
+            if (Board.GetPiece(pos) == null) {
+                throw new BoardException("No piece in the selected position!");
+            }
+            if (CurrentPlayer != Board.GetPiece(pos).Color) {
+                throw new BoardException("The selected piece isn't yours!");
+            }
+            if (!Board.GetPiece(pos).IsMovementPossible()) {
+                throw new BoardException("No possible movements for the selected piece!");
+            }
+        }
+
+        /// <summary>
+        /// Moves the piece to the desired destination
+        /// </summary>
+        /// <param name="origin"></param>
+        /// <param name="destination"></param>
+        public void MakeMove(Position origin, Position destination) {
+            ExecuteMovement(origin, destination);
+            Turn++;
+            changePlayer();
+        }
+
+        /// <summary>
+        /// Changes the current player
+        /// </summary>
+        private void changePlayer() {
+            CurrentPlayer = CurrentPlayer == Color.White ? CurrentPlayer = Color.Black : CurrentPlayer = Color.White;
         }
 
         /// <summary>

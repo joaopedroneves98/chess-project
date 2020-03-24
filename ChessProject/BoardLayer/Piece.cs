@@ -25,6 +25,31 @@ namespace board.Board {
         }
 
         /// <summary>
+        /// Checks if it is possible to move to a given position
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
+        public bool CanMoveTo(Position pos) {
+            return PossibleMovements()[pos.Line, pos.Column];
+        }
+
+        /// <summary>
+        /// Checks if there is any possible movement for the piece
+        /// </summary>
+        /// <returns></returns>
+        public bool IsMovementPossible() {
+            bool[,] mat = PossibleMovements();
+            for (int i = 0; i < Board.Lines; i++) {
+                for (int j = 0; j < Board.Columns; j++) {
+                    if (mat[i, j]) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Obtains the possible movements for a specific Piece
         /// </summary>
         /// <returns></returns>
