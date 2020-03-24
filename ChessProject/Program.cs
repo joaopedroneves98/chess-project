@@ -1,11 +1,9 @@
-﻿using ChessProject.Board;
-using System;
+﻿using board.Board;
 
 namespace ChessProject {
     class Program {
         static void Main(string[] args) {
-            Position p = new Position(3, 4);
-            Console.WriteLine("Position: " + p);
+            Board b = new Board(8, 8);
         }
     }
 }
