@@ -12,6 +12,16 @@ namespace board.Board {
             Column = column;
         }
 
+        /// <summary>
+        /// Changes the position's values
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="column"></param>
+        public void SetValues(int line, int column) {
+            Line = line;
+            Column = column;
+        }
+
         public override string ToString() {
             return Line
                 + ", "

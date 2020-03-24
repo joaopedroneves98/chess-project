@@ -14,8 +14,16 @@ namespace ChessProject {
                     Console.Clear();
                     Screen.PrintBoard(game.Board);
 
+                    Console.WriteLine();
                     Console.Write("Origin: ");
                     Position origin = Screen.ReadChessPosition().ToPosition();
+
+                    bool[,] possibleMoves = game.Board.GetPiece(origin).PossibleMovements(); // Gets the possible movements for the selected piece
+
+                    Console.Clear();
+                    Screen.PrintBoard(game.Board, possibleMoves); // Prints the board with the possible moves
+
+                    Console.WriteLine();
                     Console.Write("Destination: ");
                     Position destination = Screen.ReadChessPosition().ToPosition();
 
