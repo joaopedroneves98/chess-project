@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ChessProject.Board {
+namespace board.Board {
     class Position {
         public int Line { get; set; }
         public int Column { get; set; }
