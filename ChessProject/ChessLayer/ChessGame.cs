@@ -122,7 +122,7 @@ namespace ChessProject.ChessLayer {
         /// <param name="origin"></param>
         /// <param name="destination"></param>
         public void ValidateDestination(Position origin, Position destination) {
-            if (!Board.GetPiece(origin).CanMoveTo(destination)) {
+            if (!Board.GetPiece(origin).PossibleMovement(destination)) {
                 throw new BoardException("Invalid destination!");
             }
         }

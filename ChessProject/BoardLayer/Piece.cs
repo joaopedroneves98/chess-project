@@ -36,7 +36,7 @@ namespace board.Board {
         /// </summary>
         /// <param name="pos"></param>
         /// <returns></returns>
-        public bool CanMoveTo(Position pos) {
+        public bool PossibleMovement(Position pos) {
             return PossibleMovements()[pos.Line, pos.Column];
         }
 
