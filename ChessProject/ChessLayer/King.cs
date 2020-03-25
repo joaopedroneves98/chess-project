@@ -72,13 +72,25 @@ namespace ChessProject.chess {
             // SPECIAL PLAY CASTLING (ROQUE)
             if (NumberOfMovements == 0 && !Game.Check) {
                 // SMALL CASTLING
-                Position posRook = new Position(Position.Line, Position.Column + 3);
-                if (testRookForCastling(posRook)) {
+                Position posRook1 = new Position(Position.Line, Position.Column + 3);
+                if (testRookForCastling(posRook1)) {
                     // Check if position next to king and rook is available
                     Position p1 = new Position(Position.Line, Position.Column + 1); // Position next to the king
                     Position p2 = new Position(Position.Line, Position.Column + 2); // Position next to the rook
                     if (Board.GetPiece(p1) == null && Board.GetPiece(p2) == null) {
                         mat[Position.Line, Position.Column + 2] = true;
+                    }
+                }
+
+                // BIG CASTLING
+                Position posRook2 = new Position(Position.Line, Position.Column - 4);
+                if (testRookForCastling(posRook2)) {
+                    // Check if position next to king and rook is available
+                    Position p1 = new Position(Position.Line, Position.Column - 1);
+                    Position p2 = new Position(Position.Line, Position.Column - 2); 
+                    Position p3 = new Position(Position.Line, Position.Column - 3);
+                    if (Board.GetPiece(p1) == null && Board.GetPiece(p2) == null && Board.GetPiece(p3) == null) {
+                        mat[Position.Line, Position.Column - 2] = true;
                     }
                 }
             }

@@ -40,6 +40,25 @@ namespace ChessProject.ChessLayer {
             if (captured != null) {
                 Captured.Add(captured);
             }
+
+            // SPECIAL PLAY SMALL CASTLING
+            if (p is King && destination.Column == origin.Column + 2) {
+                Position rookOrigin = new Position(origin.Line, origin.Column + 3);
+                Position rookDest = new Position(origin.Line, origin.Column + 1);
+                Piece rook = Board.RemovePiece(rookOrigin);
+                rook.IncrementMovements();
+                Board.PlacePiece(rook, rookDest);
+            }
+
+            // SPECIAL PLAY BIG CASTLING
+            if (p is King && destination.Column == origin.Column - 2) {
+                Position rookOrigin = new Position(origin.Line, origin.Column - 4);
+                Position rookDest = new Position(origin.Line, origin.Column - 1);
+                Piece rook = Board.RemovePiece(rookOrigin);
+                rook.IncrementMovements();
+                Board.PlacePiece(rook, rookDest);
+            }
+
             return captured;
         }
 
@@ -122,6 +141,7 @@ namespace ChessProject.ChessLayer {
         /// <param name="origin"></param>
         /// <param name="destination"></param>
         public void ValidateDestination(Position origin, Position destination) {
+            Board.ValidatePosition(destination);
             if (!Board.GetPiece(origin).PossibleMovement(destination)) {
                 throw new BoardException("Invalid destination!");
             }
@@ -132,6 +152,7 @@ namespace ChessProject.ChessLayer {
         /// </summary>
         /// <param name="pos"></param>
         public void ValidateOriginPosition(Position pos) {
+            Board.ValidatePosition(pos);
             if (Board.GetPiece(pos) == null) {
                 throw new BoardException("No piece in the selected position!");
             }
@@ -218,6 +239,24 @@ namespace ChessProject.ChessLayer {
                 Captured.Remove(capturedPiece);
             }
             Board.PlacePiece(p, origin);
+
+            // SPECIAL PLAY SMALL CASTLING
+            if (p is King && destination.Column == origin.Column + 2) {
+                Position rookOrigin = new Position(origin.Line, origin.Column + 3);
+                Position rookDest = new Position(origin.Line, origin.Column + 1);
+                Piece rook = Board.RemovePiece(rookDest);
+                rook.IncrementMovements();
+                Board.PlacePiece(rook, rookOrigin);
+            }
+
+            // SPECIAL PLAY BIG CASTLING
+            if (p is King && destination.Column == origin.Column - 2) {
+                Position rookOrigin = new Position(origin.Line, origin.Column - 4);
+                Position rookDest = new Position(origin.Line, origin.Column - 1);
+                Piece rook = Board.RemovePiece(rookDest);
+                rook.IncrementMovements();
+                Board.PlacePiece(rook, rookOrigin);
+            }
         }
 
         /// <summary>
