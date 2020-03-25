@@ -1,4 +1,5 @@
 ﻿using board.Board;
+using ChessProject.ChessLayer;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,8 +7,9 @@ using System.Text;
 namespace ChessProject.chess {
     class King : Piece{
 
-        public King(Board board, Color color) : base(color, board) {
-
+        public ChessGame Game { get; private set; }
+        public King(Board board, Color color, ChessGame game) : base(color, board) {
+            Game = game;
         }
 
         /// <summary>
@@ -67,7 +69,32 @@ namespace ChessProject.chess {
                 mat[pos.Line, pos.Column] = true;
             }
 
+            // SPECIAL PLAY CASTLING (ROQUE)
+            if (NumberOfMovements == 0 && !Game.Check) {
+                // SMALL CASTLING
+                Position posRook = new Position(Position.Line, Position.Column + 3);
+                if (testRookForCastling(posRook)) {
+                    // Check if position next to king and rook is available
+                    Position p1 = new Position(Position.Line, Position.Column + 1); // Position next to the king
+                    Position p2 = new Position(Position.Line, Position.Column + 2); // Position next to the rook
+                    if (Board.GetPiece(p1) == null && Board.GetPiece(p2) == null) {
+                        mat[Position.Line, Position.Column + 2] = true;
+                    }
+                }
+            }
+
+
             return mat;
+        }
+
+        /// <summary>
+        /// Check if the rook is suitable for Castling
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
+        private bool testRookForCastling(Position pos) {
+            Piece p = Board.GetPiece(pos);
+            return p != null && p is Rook && p.Color == Color && p.NumberOfMovements == 0;
         }
 
         /// <summary>
