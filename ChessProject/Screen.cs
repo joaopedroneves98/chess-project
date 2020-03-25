@@ -6,6 +6,48 @@ using System.Text;
 
 namespace ChessProject {
     class Screen {
+
+        /// <summary>
+        /// Prints the game on the command line
+        /// </summary>
+        /// <param name="game"></param>
+        public static void PrintGame(ChessGame game) {
+            PrintBoard(game.Board);
+            Console.WriteLine();
+            PrintCapturedPieces(game);
+            Console.WriteLine("Turn: " + game.Turn);
+            Console.WriteLine("Waiting for player: " + game.CurrentPlayer);
+        }
+
+        /// <summary>
+        /// Prints the list of captured pieces for each color
+        /// </summary>
+        /// <param name="game"></param>
+        public static void PrintCapturedPieces(ChessGame game) {
+            Console.WriteLine("Captured Pieces: ");
+            Console.Write("White: ");
+            PrintSet(game.CapturedPieces(Color.White));
+            Console.WriteLine();
+            Console.Write("Black: ");
+            ConsoleColor aux = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            PrintSet(game.CapturedPieces(Color.Black));
+            Console.ForegroundColor = aux;
+            Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Prints a set of pieces
+        /// </summary>
+        /// <param name="set"></param>
+        public static void PrintSet(HashSet<Piece> set) {
+            Console.Write("[");
+            foreach (var x in set) {
+                Console.Write(x + " ");
+            }
+            Console.Write("]");
+        }
+
         /// <summary>
         /// Prints the board on the console interface
         /// </summary>

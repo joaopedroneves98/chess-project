@@ -12,12 +12,16 @@ namespace ChessProject.ChessLayer {
         public int Turn { get; private set; }
         public Color CurrentPlayer { get; private set; }
         public bool Finished { get; set; }
+        public HashSet<Piece> Pieces { get; private set; }
+        public HashSet<Piece> Captured { get; private set; }
 
         public ChessGame() {
             Board = new Board(8, 8);
             Turn = 1;
             CurrentPlayer = Color.White;
             Finished = false;
+            Pieces = new HashSet<Piece>();
+            Captured = new HashSet<Piece>();
             placePieces();
         }
 
@@ -31,6 +35,40 @@ namespace ChessProject.ChessLayer {
             p.IncrementMovements();
             Piece captured = Board.RemovePiece(destination);
             Board.PlacePiece(p, destination);
+            if (captured != null) {
+                Captured.Add(captured);
+            }
+        }
+
+        /// <summary>
+        /// Obtains the captured pieces with the given color
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public HashSet<Piece> CapturedPieces(Color color) {
+            HashSet<Piece> aux = new HashSet<Piece>();
+            foreach (var item in Captured) {
+                if (item.Color == color) {
+                    aux.Add(item);
+                }
+            }
+            return aux;
+        }
+
+        /// <summary>
+        /// Obtains the pieces that are still in play
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public HashSet<Piece> PiecesInPlay(Color color) {
+            HashSet<Piece> aux = new HashSet<Piece>();
+            foreach (var item in Pieces) {
+                if (item.Color == color) {
+                    aux.Add(item);
+                }
+            }
+            aux.ExceptWith(CapturedPieces(color));
+            return aux;
         }
 
         public void ValidateDestination(Position origin, Position destination) {
@@ -114,6 +152,7 @@ namespace ChessProject.ChessLayer {
 
         public void PlaceNewPiece(char column, int line, Piece piece) {
             Board.PlacePiece(piece, new ChessPosition(column, line).ToPosition());
+            Pieces.Add(piece);
         }
     }
 }
