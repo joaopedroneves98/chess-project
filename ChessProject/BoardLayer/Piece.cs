@@ -25,6 +25,13 @@ namespace board.Board {
         }
 
         /// <summary>
+        /// Decrements the number of movements
+        /// </summary>
+        public void DecrementMovements() {
+            NumberOfMovements--;
+        }
+
+        /// <summary>
         /// Checks if it is possible to move to a given position
         /// </summary>
         /// <param name="pos"></param>

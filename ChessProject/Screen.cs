@@ -17,6 +17,9 @@ namespace ChessProject {
             PrintCapturedPieces(game);
             Console.WriteLine("Turn: " + game.Turn);
             Console.WriteLine("Waiting for player: " + game.CurrentPlayer);
+            if (game.Check) {
+                Console.WriteLine("CHECK!");
+            }
         }
 
         /// <summary>

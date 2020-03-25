@@ -14,12 +14,14 @@ namespace ChessProject.ChessLayer {
         public bool Finished { get; set; }
         public HashSet<Piece> Pieces { get; private set; }
         public HashSet<Piece> Captured { get; private set; }
+        public bool Check { get; private set; }
 
         public ChessGame() {
             Board = new Board(8, 8);
             Turn = 1;
             CurrentPlayer = Color.White;
             Finished = false;
+            Check = false;
             Pieces = new HashSet<Piece>();
             Captured = new HashSet<Piece>();
             placePieces();
@@ -30,7 +32,7 @@ namespace ChessProject.ChessLayer {
         /// </summary>
         /// <param name="origin"></param>
         /// <param name="destination"></param>
-        public void ExecuteMovement(Position origin, Position destination) {
+        public Piece ExecuteMovement(Position origin, Position destination) {
             Piece p = Board.RemovePiece(origin);
             p.IncrementMovements();
             Piece captured = Board.RemovePiece(destination);
@@ -38,6 +40,7 @@ namespace ChessProject.ChessLayer {
             if (captured != null) {
                 Captured.Add(captured);
             }
+            return captured;
         }
 
         /// <summary>
@@ -71,6 +74,53 @@ namespace ChessProject.ChessLayer {
             return aux;
         }
 
+        /// <summary>
+        /// Verifies if the king is in Check
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public bool IsInCheck(Color color) {
+            Piece r = King(color);
+            if (r == null) {
+                throw new BoardException("There is no King for the color " + color + " on the board!");
+            }
+            foreach (var x in PiecesInPlay(Opponent(color))) {
+                bool[,] mat = x.PossibleMovements();
+                if (mat[r.Position.Line, r.Position.Column]) { // If the king's position is a possible movement, he is in Check
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Obtains the king for a certain color
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        private Piece King(Color color) {
+            foreach (var x in PiecesInPlay(color)) {
+                if (x is King) {
+                    return x;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Obtains the color of the opponent
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        private Color Opponent(Color color) {
+            return color == Color.White ? Color.Black : Color.White;
+        }
+
+        /// <summary>
+        /// Validates if the piece can move to a certain position
+        /// </summary>
+        /// <param name="origin"></param>
+        /// <param name="destination"></param>
         public void ValidateDestination(Position origin, Position destination) {
             if (!Board.GetPiece(origin).CanMoveTo(destination)) {
                 throw new BoardException("Invalid destination!");
@@ -99,9 +149,38 @@ namespace ChessProject.ChessLayer {
         /// <param name="origin"></param>
         /// <param name="destination"></param>
         public void MakeMove(Position origin, Position destination) {
-            ExecuteMovement(origin, destination);
+            Piece capturedPiece = ExecuteMovement(origin, destination);
+
+            if (IsInCheck(CurrentPlayer)) {
+                UndoMovement(origin, destination, capturedPiece);
+                throw new BoardException("You can't put yourself in Check!");
+            }
+
+            if (IsInCheck(Opponent(CurrentPlayer))) {
+                Check = true;
+            }
+            else {
+                Check = false;
+            }
+
             Turn++;
             changePlayer();
+        }
+
+        /// <summary>
+        /// Undoes the movement 
+        /// </summary>
+        /// <param name="origin"></param>
+        /// <param name="destination"></param>
+        /// <param name="capturedPiece"></param>
+        public void UndoMovement(Position origin, Position destination, Piece capturedPiece) {
+            Piece p = Board.RemovePiece(destination);
+            p.DecrementMovements();
+            if (capturedPiece != null) {
+                Board.PlacePiece(capturedPiece, destination);
+                Captured.Remove(capturedPiece);
+            }
+            Board.PlacePiece(p, origin);
         }
 
         /// <summary>
