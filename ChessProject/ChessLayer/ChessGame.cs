@@ -163,8 +163,45 @@ namespace ChessProject.ChessLayer {
                 Check = false;
             }
 
+            if (TestCheckmate(Opponent(CurrentPlayer))) {
+                Finished = true;
+            }
+            else {
+                Turn++;
+                changePlayer();
+            }
+
             Turn++;
             changePlayer();
+        }
+
+        /// <summary>
+        /// Verifies if a player is in checkmate
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public bool TestCheckmate(Color color) {
+            if (!IsInCheck(color)) {
+                return false;
+            }
+            foreach (var x in PiecesInPlay(color)) {
+                bool[,] mat = x.PossibleMovements();
+                for (int i = 0; i < Board.Lines; i++) {
+                    for (int j = 0; j < Board.Columns; j++) {
+                        if (mat[i,j]) {
+                            Position origin = x.Position;
+                            Position destination = new Position(i, j);
+                            Piece capturedPiece = ExecuteMovement(origin, destination);
+                            bool checkTest = IsInCheck(color);
+                            UndoMovement(origin, destination, capturedPiece);
+                            if (!checkTest) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
         }
 
         /// <summary>

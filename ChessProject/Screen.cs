@@ -17,8 +17,14 @@ namespace ChessProject {
             PrintCapturedPieces(game);
             Console.WriteLine("Turn: " + game.Turn);
             Console.WriteLine("Waiting for player: " + game.CurrentPlayer);
-            if (game.Check) {
-                Console.WriteLine("CHECK!");
+            if (!game.Finished) {
+                if (game.Check) {
+                    Console.WriteLine("CHECK!");
+                }
+            }
+            else {
+                Console.WriteLine("CHECKMATE!");
+                Console.WriteLine("Winner: " + game.CurrentPlayer);
             }
         }
 
