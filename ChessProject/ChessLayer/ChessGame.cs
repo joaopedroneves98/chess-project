@@ -34,7 +34,7 @@ namespace ChessProject.ChessLayer {
         }
 
         public void ValidateDestination(Position origin, Position destination) {
-            if (Board.GetPiece(origin).CanMoveTo(destination)) {
+            if (!Board.GetPiece(origin).CanMoveTo(destination)) {
                 throw new BoardException("Invalid destination!");
             }
         }
