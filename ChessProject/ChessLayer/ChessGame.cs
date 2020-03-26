@@ -193,6 +193,20 @@ namespace ChessProject.ChessLayer {
                 throw new BoardException("You can't put yourself in Check!");
             }
 
+            Piece p = Board.GetPiece(destination);
+
+            // SPECIAL PLAY PROMOTION
+            if (p is Pawn) {
+                if ((p.Color == Color.White && destination.Line == 0) || (p.Color == Color.Black && destination.Line == 7)) {
+                    p = Board.RemovePiece(destination);
+                    Pieces.Remove(p);
+                    Piece queen = new Queen(Board, p.Color);
+                    Board.PlacePiece(queen, destination);
+                    Pieces.Add(queen);
+                }
+            }
+
+
             if (IsInCheck(Opponent(CurrentPlayer))) {
                 Check = true;
             }
@@ -211,7 +225,6 @@ namespace ChessProject.ChessLayer {
             //Turn++;
             //changePlayer();
 
-            Piece p = Board.GetPiece(destination);
 
             // SPECIAL PLAY EN PASSANT
             if (p is Pawn && (destination.Line == origin.Line - 2 || destination.Line == origin.Line + 2)) {
