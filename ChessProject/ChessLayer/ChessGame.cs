@@ -15,6 +15,7 @@ namespace ChessProject.ChessLayer {
         public HashSet<Piece> Pieces { get; private set; }
         public HashSet<Piece> Captured { get; private set; }
         public bool Check { get; private set; }
+        public Piece VulnerableEnPassant { get; private set; }
 
         public ChessGame() {
             Board = new Board(8, 8);
@@ -57,6 +58,21 @@ namespace ChessProject.ChessLayer {
                 Piece rook = Board.RemovePiece(rookOrigin);
                 rook.IncrementMovements();
                 Board.PlacePiece(rook, rookDest);
+            }
+
+            // SPECIAL PLAY EN PASSANT
+            if (p is Pawn) {
+                if (origin.Column != destination.Column && captured == null) {
+                    Position pawnPos;
+                    if (p.Color == Color.White) {
+                        pawnPos = new Position(destination.Line + 1, destination.Column);
+                    }
+                    else {
+                        pawnPos = new Position(destination.Line - 1, destination.Column);
+                    }
+                    captured = Board.RemovePiece(pawnPos);
+                    Captured.Add(captured);
+                }
             }
 
             return captured;
@@ -192,8 +208,18 @@ namespace ChessProject.ChessLayer {
                 changePlayer();
             }
 
-            Turn++;
-            changePlayer();
+            //Turn++;
+            //changePlayer();
+
+            Piece p = Board.GetPiece(destination);
+
+            // SPECIAL PLAY EN PASSANT
+            if (p is Pawn && (destination.Line == origin.Line - 2 || destination.Line == origin.Line + 2)) {
+                VulnerableEnPassant = p;
+            }
+            else {
+                VulnerableEnPassant = null;
+            }
         }
 
         /// <summary>
@@ -257,6 +283,21 @@ namespace ChessProject.ChessLayer {
                 rook.IncrementMovements();
                 Board.PlacePiece(rook, rookOrigin);
             }
+
+            // SPECIAL PLAY EN PASSANT
+            if (p is Pawn) {
+                if (origin.Column != destination.Column && capturedPiece == VulnerableEnPassant) {
+                    Piece pawn = Board.RemovePiece(destination);
+                    Position pawnPos;
+                    if (p.Color == Color.White) {
+                        pawnPos = new Position(3, destination.Column);
+                    }
+                    else {
+                        pawnPos = new Position(4, destination.Column);
+                    }
+                    Board.PlacePiece(pawn, pawnPos);
+                }
+            }
         }
 
         /// <summary>
@@ -278,14 +319,14 @@ namespace ChessProject.ChessLayer {
             PlaceNewPiece('f', 1, new Bishop(Board, Color.White));
             PlaceNewPiece('g', 1, new Horse(Board, Color.White));
             PlaceNewPiece('h', 1, new Rook(Board, Color.White));
-            PlaceNewPiece('a', 2, new Pawn(Board, Color.White));
-            PlaceNewPiece('b', 2, new Pawn(Board, Color.White));
-            PlaceNewPiece('c', 2, new Pawn(Board, Color.White));
-            PlaceNewPiece('d', 2, new Pawn(Board, Color.White));
-            PlaceNewPiece('e', 2, new Pawn(Board, Color.White));
-            PlaceNewPiece('f', 2, new Pawn(Board, Color.White));
-            PlaceNewPiece('g', 2, new Pawn(Board, Color.White));
-            PlaceNewPiece('h', 2, new Pawn(Board, Color.White));
+            PlaceNewPiece('a', 2, new Pawn(Board, Color.White, this));
+            PlaceNewPiece('b', 2, new Pawn(Board, Color.White, this));
+            PlaceNewPiece('c', 2, new Pawn(Board, Color.White, this));
+            PlaceNewPiece('d', 2, new Pawn(Board, Color.White, this));
+            PlaceNewPiece('e', 2, new Pawn(Board, Color.White, this));
+            PlaceNewPiece('f', 2, new Pawn(Board, Color.White, this));
+            PlaceNewPiece('g', 2, new Pawn(Board, Color.White, this));
+            PlaceNewPiece('h', 2, new Pawn(Board, Color.White, this));
 
             PlaceNewPiece('a', 8, new Rook(Board, Color.Black));
             PlaceNewPiece('b', 8, new Horse(Board, Color.Black));
@@ -295,14 +336,14 @@ namespace ChessProject.ChessLayer {
             PlaceNewPiece('f', 8, new Bishop(Board, Color.Black));
             PlaceNewPiece('g', 8, new Horse(Board, Color.Black));
             PlaceNewPiece('h', 8, new Rook(Board, Color.Black));
-            PlaceNewPiece('a', 7, new Pawn(Board, Color.Black));
-            PlaceNewPiece('b', 7, new Pawn(Board, Color.Black));
-            PlaceNewPiece('c', 7, new Pawn(Board, Color.Black));
-            PlaceNewPiece('d', 7, new Pawn(Board, Color.Black));
-            PlaceNewPiece('e', 7, new Pawn(Board, Color.Black));
-            PlaceNewPiece('f', 7, new Pawn(Board, Color.Black));
-            PlaceNewPiece('g', 7, new Pawn(Board, Color.Black));
-            PlaceNewPiece('h', 7, new Pawn(Board, Color.Black));
+            PlaceNewPiece('a', 7, new Pawn(Board, Color.Black, this));
+            PlaceNewPiece('b', 7, new Pawn(Board, Color.Black, this));
+            PlaceNewPiece('c', 7, new Pawn(Board, Color.Black, this));
+            PlaceNewPiece('d', 7, new Pawn(Board, Color.Black, this));
+            PlaceNewPiece('e', 7, new Pawn(Board, Color.Black, this));
+            PlaceNewPiece('f', 7, new Pawn(Board, Color.Black, this));
+            PlaceNewPiece('g', 7, new Pawn(Board, Color.Black, this));
+            PlaceNewPiece('h', 7, new Pawn(Board, Color.Black, this));
         }
 
         public void PlaceNewPiece(char column, int line, Piece piece) {
